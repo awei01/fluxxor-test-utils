@@ -1,11 +1,19 @@
 {
   "name": "fluxxor-jest-utils",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Jest test utilities for Fluxxor",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/jest"
   },
   "author": "Austin Wei <awei01@gmail.com>",
-  "license": "ISC"
+  "license": "MIT",
+  "devDependencies": {
+    "fluxxor": "^1.3.2",
+    "jest-cli": "^0.1.17",
+    "react": "^0.11.1"
+  },
+  "dependencies": {
+    "lodash": "^2.4.1"
+  }
 }
