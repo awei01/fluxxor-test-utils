@@ -5,8 +5,8 @@ This is a repository for facilitating testing when using [Fluxxor](https://githu
 This package assumes that you're using Fluxxor and want to create Jest tests.
 
 ## Installation ##
-1. `npm install -D fluxxor-jest-utils`
-1. ensure that this package is not mocked when running jest test, use `jest.dontMock('fluxxor-jest-utils');` in each test or configure your `package.json` to always ignore the module:
+1. Install: `npm install -D fluxxor-jest-utils`
+1. Ensure that this package is not mocked when running Jest tests, use `jest.dontMock('fluxxor-jest-utils');` in each test or configure your `package.json` to always ignore the module:
 ```
 {
 	jest: {
@@ -22,7 +22,7 @@ This package assumes that you're using Fluxxor and want to create Jest tests.
 If you run into `Object [object Object] has no method 'inherits'` error message in your test, you'll need a `jest.dontMock('util');` at the top of your test script. This is possibly related to https://github.com/facebook/jest/issues/78.
 
 ## Use Cases ##
-** All examples are untested but should give you an idea of how to use this module. **
+**All examples are untested but should give you an idea of how to use this module.**
 
 ### Mocking Fluxxor Actions ###
 If you want to mock actions, to test that the `.dispatch()` method is called with the correct event and payload, you can do something like:
@@ -34,8 +34,8 @@ describe('My actions', function() {
 		FluxxorJestUtils = require('fluxxor-jest-utils')(jest);
 		myActions = FluxxorJestUtils.fakeDispatchOnActions(require('./my-actions'));
 	});
-	it('when myActions.doSomething() is called, it should call .dispatch() with "something" event and payload with .foo as "foo value"', function() {
-		myActions.doSomething();
+	it('when myActions.doSomething() is called with parameter, it should call .dispatch() with "something" event and payload with .foo as parameter', function() {
+		myActions.doSomething('foo value');
 		expect(myActions.dispatch).toBeCalledWith('something', { foo: "foo value" });
 	});
 });
