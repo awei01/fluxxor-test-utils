@@ -16,8 +16,8 @@ describe('Lib.fakeInstantiatedFlux', function() {
 			flux = { stores: { store: "foo" }, actions: { action: function() {}, prop: "bar" } };
 			result = fakeInstantiatedFlux(jest, flux);
 		});
-		it('should call transformStoresToFakeInstances() with flux.stores', function() {
-			expect(transformStoresToFakeInstances).toBeCalledWith({ store: "foo" });
+		it('should call transformStoresToFakeInstances() with jest and flux.stores', function() {
+			expect(transformStoresToFakeInstances).toBeCalledWith(jest, { store: "foo" });
 		});
 		it('should transform flux.action methods to mock fns', function() {
 			expect(flux.actions.action.mock.calls).toEqual([]);
