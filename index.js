@@ -1,5 +1,6 @@
 'use strict';
 var _fakeDispatchOnActions = require('./lib/fake-dispatch-on-actions'),
+	_fakeInstantiatedFlux = require('./lib/fake-instantiated-flux'),
 	_fakeFluxInstance = require('./lib/fake-flux-instance'),
 	_fakeWaitForMethodOnStore = require('./lib/fake-waitfor-method-on-store'),
 	_mountReactClassAsChildComponent = require('./lib/mount-react-class-as-child-component');
@@ -11,6 +12,9 @@ module.exports = function(jest) {
 	return {
 		fakeDispatchOnActions: function(actions) {
 			return _fakeDispatchOnActions(jest, actions);
+		},
+		fakeInstantiatedFlux: function(flux) {
+			_fakeInstantiatedFlux(jest, flux);
 		},
 		fakeFluxInstance: function(stores, actions) {
 			return _fakeFluxInstance(jest, stores, actions);

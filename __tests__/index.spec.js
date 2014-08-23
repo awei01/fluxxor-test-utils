@@ -2,10 +2,11 @@
 jest.dontMock('util');
 jest.dontMock('../index.js');
 describe('Index', function() {
-	var fakeDispatchOnActions, fakeFluxInstance, fakeWaitForMethodOnStore, mountReactClassAsChildComponent,
+	var fakeDispatchOnActions, fakeInstantiatedFlux, fakeFluxInstance, fakeWaitForMethodOnStore, mountReactClassAsChildComponent,
 		Fluxxor, Index;
 	beforeEach(function() {
 		fakeDispatchOnActions = require('../lib/fake-dispatch-on-actions');
+		fakeInstantiatedFlux = require('../lib/fake-instantiated-flux');
 		fakeFluxInstance = require('../lib/fake-flux-instance');
 		fakeWaitForMethodOnStore = require('../lib/fake-waitfor-method-on-store');
 		mountReactClassAsChildComponent = require('../lib/mount-react-class-as-child-component');
@@ -31,6 +32,10 @@ describe('Index', function() {
 			var result = utils.fakeDispatchOnActions('actions');
 			expect(fakeDispatchOnActions).toBeCalledWith(jest, 'actions');
 			expect(result).toBe('faked actions');
+		});
+		it('when .fakeInstantiatedFlux() called with flux, it should call .fakeInstantiatedFlux() with jest and flux', function() {
+			utils.fakeInstantiatedFlux('flux');
+			expect(fakeInstantiatedFlux).toBeCalledWith(jest, 'flux');
 		});
 		it('when .fakeFluxInstance() called with stores and actions, it should call .fakeFluxInstance() with jest, stores and actions and return result', function() {
 			fakeFluxInstance.mockReturnValue('faked flux');
