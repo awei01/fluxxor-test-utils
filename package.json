@@ -1,6 +1,6 @@
 {
   "name": "fluxxor-jest-utils",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Jest test utilities for Fluxxor",
   "main": "index.js",
   "scripts": {

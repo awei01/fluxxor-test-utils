@@ -33,9 +33,11 @@ describe('Index', function() {
 			expect(fakeDispatchOnActions).toBeCalledWith(jest, 'actions');
 			expect(result).toBe('faked actions');
 		});
-		it('when .fakeInstantiatedFlux() called with flux, it should call .fakeInstantiatedFlux() with jest and flux', function() {
-			utils.fakeInstantiatedFlux('flux');
+		it('when .fakeInstantiatedFlux() called with flux, it should call .fakeInstantiatedFlux() with jest and flux and return flux', function() {
+			fakeInstantiatedFlux.mockReturnValue('faked flux');
+			var result = utils.fakeInstantiatedFlux('flux');
 			expect(fakeInstantiatedFlux).toBeCalledWith(jest, 'flux');
+			expect(result).toBe('faked flux');
 		});
 		it('when .fakeFluxInstance() called with stores and actions, it should call .fakeFluxInstance() with jest, stores and actions and return result', function() {
 			fakeFluxInstance.mockReturnValue('faked flux');

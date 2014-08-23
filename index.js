@@ -14,7 +14,7 @@ module.exports = function(jest) {
 			return _fakeDispatchOnActions(jest, actions);
 		},
 		fakeInstantiatedFlux: function(flux) {
-			_fakeInstantiatedFlux(jest, flux);
+			return _fakeInstantiatedFlux(jest, flux);
 		},
 		fakeFluxInstance: function(stores, actions) {
 			return _fakeFluxInstance(jest, stores, actions);

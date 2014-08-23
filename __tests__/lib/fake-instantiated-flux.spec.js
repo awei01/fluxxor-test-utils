@@ -11,10 +11,10 @@ describe('Lib.fakeInstantiatedFlux', function() {
 		expect(fakeInstantiatedFlux).toEqual(jasmine.any(Function));
 	});
 	describe('when passed jest and flux with .stores and .actions properties', function() {
-		var flux;
+		var flux, result;
 		beforeEach(function() {
 			flux = { stores: { store: "foo" }, actions: { action: function() {}, prop: "bar" } };
-			fakeInstantiatedFlux(jest, flux);
+			result = fakeInstantiatedFlux(jest, flux);
 		});
 		it('should call transformStoresToFakeInstances() with flux.stores', function() {
 			expect(transformStoresToFakeInstances).toBeCalledWith({ store: "foo" });
@@ -24,6 +24,9 @@ describe('Lib.fakeInstantiatedFlux', function() {
 		});
 		it('should not change flux.action properties', function() {
 			expect(flux.actions.prop).toBe('bar');
+		});
+		it('should return flux', function() {
+			expect(result).toBe(flux);
 		});
 	});
 });
