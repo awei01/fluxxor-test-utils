@@ -1,10 +1,10 @@
 'use strict';
-jest.dontMock('../../lib/fake-waitfor-method-on-store.js');
+jest.dontMock('../../lib/fake-waitfor-method-on-store');
 describe('Lib.fakeWaitForMethodOnStore', function() {
-	var transformStoresToFakeInstances,
+	var fakeStoreInstances,
 		fakeWaitForMethodOnStore;
 	beforeEach(function() {
-		transformStoresToFakeInstances = require('../../lib/transform-stores-to-fake-instances');
+		fakeStoreInstances = require('../../lib/fake-store-instances');
 		fakeWaitForMethodOnStore = require('../../lib/fake-waitfor-method-on-store');
 	});
 	it('should be a function', function() {
@@ -13,7 +13,7 @@ describe('Lib.fakeWaitForMethodOnStore', function() {
 	describe('when called with jest, store object and other stores object', function() {
 		var store;
 		beforeEach(function() {
-			transformStoresToFakeInstances.mockImpl(function (jest, stores) {
+			fakeStoreInstances.mockImpl(function (jest, stores) {
 				return stores;
 			});
 			store = {

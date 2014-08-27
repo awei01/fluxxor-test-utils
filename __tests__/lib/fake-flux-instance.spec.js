@@ -1,10 +1,10 @@
 'use strict';
-jest.dontMock('../../lib/fake-flux-instance.js');
+jest.dontMock('../../lib/fake-flux-instance');
 describe('Lib.fakeFluxInstance', function() {
-	var transformStoresToFakeInstances,
+	var fakeStoreInstances,
 		fakeFluxInstance;
 	beforeEach(function() {
-		transformStoresToFakeInstances = require('../../lib/transform-stores-to-fake-instances');
+		fakeStoreInstances = require('../../lib/fake-store-instances');
 		fakeFluxInstance = require('../../lib/fake-flux-instance');
 	});
 	it('should be a function', function() {
@@ -13,7 +13,7 @@ describe('Lib.fakeFluxInstance', function() {
 	describe('when called with jest, stores object and actions object', function() {
 		var result;
 		beforeEach(function() {
-			transformStoresToFakeInstances.mockImpl(function (jest, stores) {
+			fakeStoreInstances.mockImpl(function (jest, stores) {
 				return stores;
 			});
 			result = fakeFluxInstance(jest, { foo: "foo store" }, { bar: "bar action" });

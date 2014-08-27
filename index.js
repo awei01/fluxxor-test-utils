@@ -1,5 +1,7 @@
 'use strict';
 var _fakeDispatchOnActions = require('./lib/fake-dispatch-on-actions'),
+	_fakeFluxOnActions = require('./lib/fake-flux-on-actions'),
+	_prepareActionsWithFlux = require('./lib/prepare-actions-with-flux'),
 	_fakeInstantiatedFlux = require('./lib/fake-instantiated-flux'),
 	_fakeFluxInstance = require('./lib/fake-flux-instance'),
 	_fakeWaitForMethodOnStore = require('./lib/fake-waitfor-method-on-store'),
@@ -12,6 +14,12 @@ module.exports = function(jest) {
 	return {
 		fakeDispatchOnActions: function(actions) {
 			return _fakeDispatchOnActions(jest, actions);
+		},
+		fakeFluxOnActions: function(actions, flux) {
+			return _fakeFluxOnActions(jest, actions, flux);
+		},
+		prepareActionsWithFlux: function(actions, flux) {
+			return _prepareActionsWithFlux(jest, actions, flux);
 		},
 		fakeInstantiatedFlux: function(flux) {
 			return _fakeInstantiatedFlux(jest, flux);

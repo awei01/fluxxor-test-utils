@@ -1,5 +1,5 @@
 'use strict';
-jest.dontMock('../../lib/fake-dispatch-on-actions.js');
+jest.dontMock('../../lib/fake-dispatch-on-actions');
 describe('Lib.fakeDispatchOnActions', function() {
 	var fakeDispatchOnActions;
 	beforeEach(function() {

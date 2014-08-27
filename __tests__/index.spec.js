@@ -2,10 +2,15 @@
 jest.dontMock('util');
 jest.dontMock('../index.js');
 describe('Index', function() {
-	var fakeDispatchOnActions, fakeInstantiatedFlux, fakeFluxInstance, fakeWaitForMethodOnStore, mountReactClassAsChildComponent,
+	var fakeDispatchOnActions, fakeFluxOnActions, prepareActionsWithFlux,
+		fakeInstantiatedFlux, fakeFluxInstance,
+		fakeWaitForMethodOnStore,
+		mountReactClassAsChildComponent,
 		Fluxxor, Index;
 	beforeEach(function() {
 		fakeDispatchOnActions = require('../lib/fake-dispatch-on-actions');
+		fakeFluxOnActions = require('../lib/fake-flux-on-actions');
+		prepareActionsWithFlux = require('../lib/prepare-actions-with-flux');
 		fakeInstantiatedFlux = require('../lib/fake-instantiated-flux');
 		fakeFluxInstance = require('../lib/fake-flux-instance');
 		fakeWaitForMethodOnStore = require('../lib/fake-waitfor-method-on-store');
@@ -27,10 +32,22 @@ describe('Index', function() {
 		beforeEach(function() {
 			utils = Index(jest);
 		});
-		it('when .fakeDispatchOnActions() called with actions, it should call .fakeDispatchOnActions() with jest and actions and return result', function() {
+		it('when .fakeDispatchOnActions() called with actions, it should call .fakeDispatchOnActions() with jest and actions and return actions', function() {
 			fakeDispatchOnActions.mockReturnValue('faked actions');
 			var result = utils.fakeDispatchOnActions('actions');
 			expect(fakeDispatchOnActions).toBeCalledWith(jest, 'actions');
+			expect(result).toBe('faked actions');
+		});
+		it('when .fakeFluxOnActions() called with actions and flux, it should call .fakeFluxOnActions() with jest, actions and flux and return actions', function() {
+			fakeFluxOnActions.mockReturnValue('faked actions');
+			var result = utils.fakeFluxOnActions('actions', 'flux');
+			expect(fakeFluxOnActions).toBeCalledWith(jest, 'actions', 'flux');
+			expect(result).toBe('faked actions');
+		});
+		it('when .prepareActionsWithFlux() called with actions and flux, it should call .prepareActionsWithFlux() with jest, actions and flux and return actions', function() {
+			prepareActionsWithFlux.mockReturnValue('faked actions');
+			var result = utils.prepareActionsWithFlux('actions', 'flux');
+			expect(prepareActionsWithFlux).toBeCalledWith(jest, 'actions', 'flux');
 			expect(result).toBe('faked actions');
 		});
 		it('when .fakeInstantiatedFlux() called with flux, it should call .fakeInstantiatedFlux() with jest and flux and return flux', function() {

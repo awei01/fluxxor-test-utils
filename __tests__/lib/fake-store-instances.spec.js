@@ -1,14 +1,14 @@
 'use strict';
-jest.dontMock('../../lib/transform-stores-to-fake-instances.js');
-describe('Lib.transformStoreToFakeInstances', function() {
+jest.dontMock('../../lib/fake-store-instances');
+describe('Lib.fakeStoreInstances', function() {
 	var fakeStoreInstance,
-		transformStoreToFakeInstances;
+		fakeStoreInstances;
 	beforeEach(function() {
 		fakeStoreInstance = require('../../lib/fake-store-instance');
-		transformStoreToFakeInstances = require('../../lib/transform-stores-to-fake-instances');
+		fakeStoreInstances = require('../../lib/fake-store-instances');
 	});
 	it('should be a function', function() {
-		expect(transformStoreToFakeInstances).toEqual(jasmine.any(Function));
+		expect(fakeStoreInstances).toEqual(jasmine.any(Function));
 	});
 	describe('when passed jest and an object of stores', function() {
 		var stores, result;
@@ -20,7 +20,7 @@ describe('Lib.transformStoreToFakeInstances', function() {
 				FooStore: "foo store",
 				BarStore: "bar store"
 			};
-			result = transformStoreToFakeInstances(jest, stores);
+			result = fakeStoreInstances(jest, stores);
 		});
 		it('should call .fakeStoreInstance() with the first store', function() {
 			expect(fakeStoreInstance).toBeCalledWith(jest, 'foo store');
