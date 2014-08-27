@@ -14,16 +14,17 @@ describe('Lib.prepareActionsWithFlux', function() {
 		beforeEach(function() {
 			actions = {};
 			flux = {};
+			fakeDispatchOnActions.mockReturnValue('faked actions');
 			result = prepareActionsWithFlux(jest, actions, flux);
 		});
 		it('should call fakeDispatchOnActions() with jest and actions', function() {
 			expect(fakeDispatchOnActions).toBeCalledWith(jest, actions);
 		});
-		it('should call fakeFluxOnActions() with jest, actions and flux', function() {
-			expect(fakeFluxOnActions).toBeCalledWith(jest, actions, flux);
+		it('should call fakeFluxOnActions() with jest, result of fakeDispatchOnActions() and flux', function() {
+			expect(fakeFluxOnActions).toBeCalledWith(jest, 'faked actions', flux);
 		});
-		it('should return actions', function() {
-			expect(result).toBe(actions);
+		it('should return result of fakeDispatchOnActions()', function() {
+			expect(result).toBe('faked actions');
 		});
 	});
 });
