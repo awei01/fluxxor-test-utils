@@ -1,85 +1,70 @@
 'use strict';
 jest.dontMock('util');
 jest.dontMock('../stubs/foo-store');
-jest.dontMock('../stubs/bar-store');
 jest.dontMock('../stubs/actions');
 jest.dontMock('../../lib/fake-flux');
-jest.dontMock('../../lib/make-store-emit-tester');
-jest.dontMock('../../lib/make-actions-dispatch-tester');
-describe('Lib.fakeFlux()', function() {
-	var Flux, Store,
-		FooStore, BarStore, Actions, MyEvents,
-		fakeFlux;
+jest.dontMock('../../lib/store-emit-watcher');
+jest.dontMock('../../lib/actions-dispatch-watcher');
+describe('Lib.FakeFlux', function() {
+	var Flux,
+		FooStore, Actions, Events,
+		FakeFlux;
 	beforeEach(function() {
 		Flux = require('fluxxor/lib/flux');
-		Store = require('fluxxor/lib/store');
 
 		FooStore = require('../stubs/foo-store');
-		BarStore = require('../stubs/bar-store');
 		Actions = require('../stubs/actions');
-		MyEvents = require('../stubs/events');
+		Events = require('../stubs/events');
 
-		fakeFlux = require('../../lib/fake-flux');
+		FakeFlux = require('../../lib/fake-flux');
 	});
 	it('should be a function', function() {
-		expect(fakeFlux).toEqual(jasmine.any(Function));
+		expect(FakeFlux).toEqual(jasmine.any(Function));
 	});
 	describe('result when instantiated', function() {
-		var fake;
+		var fakeFlux;
 		beforeEach(function() {
-			fake = fakeFlux();
+			fakeFlux = new FakeFlux();
 		});
-		it('should be an instance of Fluxxor.Lib.Flux', function() {
-			expect(fake instanceof Flux).toBe(true);
+		it('should be an instance of Flux', function() {
+			expect(fakeFlux instanceof Flux).toBe(true);
 		});
-		describe('.testStore() called with name and store instance', function() {
-			var fooStore;
+		describe('result when .makeStoreEmitWatcher() called with existing store', function() {
+			var fooStore, watcher;
 			beforeEach(function() {
-				fooStore = fake.testStore('FooStore', new FooStore());
+				fooStore = new FooStore();
+				fakeFlux.addStore('FooStore', fooStore);
+				watcher = fakeFlux.makeStoreEmitWatcher('FooStore');
 			});
-			it('should be an instance of Fluxxor.Lib.Store', function() {
-				expect(fooStore instanceof Store).toBe(true);
+			it('when .dispatcher dispatches action the store listens to, it should perform store actions', function() {
+				fakeFlux.dispatcher.dispatch({ type: Events.FOO_EVENT, payload: { value: "foo" } });
+				expect(fooStore.getValue()).toBe('foo');
 			});
-			it('should add the store to .stores', function() {
-				expect(fake.stores.FooStore).toBe(fooStore);
+			it('when .dispatcher dispatches action which store subsequently calls .emit() with event, watcher should catch the emitted event', function() {
+				fakeFlux.dispatcher.dispatch({ type: Events.FOO_EVENT, payload: { value: "foo" } });
+				expect(watcher.getLast()).toBe('foo change');
 			});
-			it('when dispatcher called with action that emits an event, store should handle action and capture emitted event', function() {
-				fake.dispatcher.dispatch({ type: MyEvents.FOO_EVENT, payload: { value: "foo value" } });
-				expect(fooStore.getValue()).toBe('foo value');
-				expect(fooStore.toHaveEmitted('foo'));
-			});
-			describe('when another store is isolated for test', function() {
-				var barStore;
-				beforeEach(function() {
-					barStore = fake.testStore('BarStore', new BarStore());
-				});
-				it('should add the store to .stores', function() {
-					expect(fake.stores.BarStore).toBe(barStore);
-				});
-				it('when dispatcher called with action that emits event, should not affect the events emitted on other store', function() {
-					fake.dispatcher.dispatch({ type: MyEvents.BAR_EVENT, payload: { value: "bar value" } });
-					expect(barStore.getValue()).toBe('bar value');
-					expect(fooStore.toHaveEmitted('bar')).toBe(false);
-					expect(barStore.toHaveEmitted('bar')).toBe(true);
-				});
+			it('when .makeStoreEmitWatcher() called with non-existent store, should throw Error', function() {
+				expect(function() {
+					fakeFlux.makeStoreEmitWatcher('invalid');
+				}).toThrow('Cannot watch undefined store [invalid]');
 			});
 		});
-		describe('.testActions() called with actions object', function() {
-			var tester;
+		describe('result when .makeActionsDispatchWatcher() called when actions set', function() {
+			var watcher;
 			beforeEach(function() {
-				tester = fake.testActions(Actions);
+				fakeFlux.addActions(Actions);
+				watcher = fakeFlux.makeActionsDispatchWatcher();
 			});
-			it('should add the actions to flux.actions', function() {
-				expect(fake.actions.doFooAction).toEqual(jasmine.any(Function));
+			it('when .actions method called, should catch the dispatched event', function() {
+				fakeFlux.actions.doFooAction('foo');
+				expect(watcher.getLast()).toEqual({ type: Events.FOO_EVENT, payload: { value: "foo" } });
 			});
-			it('when action that calls .dispatch() called, should log the dispatched event', function() {
-				fake.actions.doFooAction('foo');
-				expect(tester.getLatestDispatch()).toEqual({ type: MyEvents.FOO_EVENT, payload: { value: "foo" } });
-			});
-			it('when .resetDispatches() called and action that calls .dispatch() called, should log the dispatched event', function() {
-				tester.resetDispatches();
-				fake.actions.doFooAction('foo');
-				expect(tester.getLatestDispatch()).toEqual({ type: MyEvents.FOO_EVENT, payload: { value: "foo" } });
+			it('when .makeActionsDispatchWatcher() called when actions are empty, should throw Error', function() {
+				fakeFlux.actions = {};
+				expect(function() {
+					fakeFlux.makeActionsDispatchWatcher();
+				}).toThrow('Cannot watch undefined actions');
 			});
 		});
 	});
