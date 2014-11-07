@@ -1,10 +1,10 @@
 {
-  "name": "fluxxor-jest-utils",
-  "version": "0.0.7",
-  "description": "Jest test utilities for Fluxxor",
+  "name": "fluxxor-test-utils",
+  "version": "0.0.0",
+  "description": "Test utilities for Fluxxor",
   "repository": {
     "type": "git",
-    "url": "https://github.com/awei01/fluxxor-jest-utils/"
+    "url": "https://github.com/awei01/fluxxor-test-utils/"
   },
   "main": "index.js",
   "scripts": {
