@@ -1,7 +1,11 @@
 {
   "name": "fluxxor-jest-utils",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Jest test utilities for Fluxxor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/awei01/fluxxor-jest-utils/"
+  },
   "main": "index.js",
   "scripts": {
     "test": "node_modules/.bin/jest"

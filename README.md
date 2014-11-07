@@ -1,5 +1,7 @@
 # Fluxxor Jest Utils #
 
+* Deprecated. Please use https://github.com/awei01/fluxxor-test-utils *
+
 This is a repository for facilitating testing when using [Fluxxor](https://github.com/BinaryMuse/fluxxor) and [Jest](http://facebook.github.io/jest/docs).
 
 This package assumes that you're using Fluxxor and want to create Jest tests.
