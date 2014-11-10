@@ -5,11 +5,11 @@ var Fluxxor = require('fluxxor'),
 module.exports = Fluxxor.createStore({
 	initialize: function() {
 		this.bindActions(
-			Events.FOO_EVENT, this.handleFooEvent
+			Events.FOO_EVENT, this._handleFooEvent
 		);
 	},
 	_value: undefined,
-	handleFooEvent: function(payload) {
+	_handleFooEvent: function(payload) {
 		this._value = payload.value;
 		this.emit('foo change');
 	},
