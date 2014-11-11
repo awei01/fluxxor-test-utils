@@ -39,7 +39,6 @@ If you're using Jest, according to this issue: https://github.com/facebook/jest/
 FluxxorTestUtils.fakeFlux( [storesOrFluxInstance], [actions] )
 
 ```
-# fakeFlux() returns an instance of FakeFlux. 
 # FakeFlux inherits from Fluxxor.Lib.Flux and has some additionaly methods to facilitate testing.
 # @param:   (optional) Object of stores | instance of Flux 
 # @param:   (optional) Object of actions
@@ -65,33 +64,69 @@ var fakeFlux = new FluxxorTestUtils.fakeFlux(realFlux);
 
 ```
 
-FluxxorTestUtils.extendJasmineMatchers( jasmine )
+
+## FakeFlux ##
+
+fakeFlux.makeStoreEmitSpy( storeName )
+
 
 ```
-# extendJasmineMatchers() 
-# This method extends jasmine matchers with additional methods for testing.
-# @param:   (required) The jasmine object (usually "this" when in a test suite)
-# @returns: itself to allow for chaining
+# Returns a StoreEmitSpy
+# @param:  (required) valid name of a store
+# @returns: StoreEmitSpy
 
-# from within a test suite:
-var FluxxorTestUtils;
-beforeEach(function() {
-	FluxxorTestUtils = require('fluxxor-test-utils');
-	FluxxorTestUtils.extendJasmineMatchers();
-	
-	// or:
-	// FluxxorTestUtils = require('fluxxor-test-utils').extendJasmineMatchers();
-});
+var fakeFlux = FluxxorTestUtils.fakeFlux({ FooStore: new FooStore() });
+var fooSpy = fakeFlux.makeStoreEmitSpy('FooStore');
 ```
 
-FluxxorTestUtils.getJestUtils()
+fakeFlux.makeActionsDispatchSpy();
+
+``` 
+# Returns an ActionsDispatchSpy
+# @returns: ActionsDispatchSpy
+
+var fakeFlux = FluxxorTestUtils.fakeFlux({}, { doFooAction: function() { } });
+var actionsSpy = fakeFlux.makeActionsDispatchSpy();
+```
+
+fakeFlux.genMocksForStore( storeName, [storeName...])
 
 ```
-# getJestUtils();
-# Returns instance of Jest utility object that helps resolve jest instance if you're using jest-cli to test
-# @returns: JestUtils
+# When used within Jest tests, creates mocks for each of the store's public methods (not prefixed with '_')
+# @param:   one or more names of store, use "*" to mock all stores
+# @returns: FakeFlux instance for chaining
 
-var FluxxorTestUtils = require('fluxxor-test-utils');
-var JestUtils = FluxxorTestUtils.getJestUtils();
+var fakeFlux = FluxxorTestUtils.fakeFlux({ FooStore: new FooStore(), BarStore: new BarStore() });
+
+fakeFlux.genMocksForStore('FooStore');
+// now all the FooStore methods are mocked with jest.genMockFn();
+
+fakeFlux.genMocksForStore('FooStore', 'BarStore');
+// now both the FooStore and BarStore methods are mocked with jest.genMockFn();
+
+fakeFlux.genMocksForStore('*');
+// all of the stores' methods are mocked with jest.genMockFn();
 ```
 
+fakeFlux.genMocksForActions()
+
+```
+# When used within Jest tests, creates mocks for all of the FakeFlux's actions
+# @returns: FakeFlux instance for chaining
+
+var fakeFlux = FluxxorTestUtils.fakeFlux({}, { doFooAction: function() { } });
+
+fakeFlux.genMocksForActions();
+// now all the actions are mocked with jest.genMockFn();
+```
+
+fakeFlux.genMocksForStoresAndActions()
+```
+# Mocks all the stores' and actions` methods using jest.genMockFn();
+# @returns: FakeFlux instance for chaning
+
+var fakeFlux = FluxxorTestUtils.fakeFlux({ FooStore: new FooStore() }, { doFooAction: function() { } });
+
+fakeFlux.genMocksForStoresAndActions();
+// now all the stores' and actions' methods are mocked with jest.genMockFn();
+```
