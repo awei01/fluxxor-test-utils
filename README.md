@@ -2,7 +2,7 @@
 
 This is a repository for facilitating testing when using [Fluxxor](http://http://fluxxor.com). It can be used along with [Jest](http://facebook.github.io/jest/) for testing.
 
-** This is a work in progress and API is not stable. ** Suggestions and pull requests are welcome.
+*This is a work in progress and API is not stable.* Suggestions and pull requests are welcome.
 
 ## Installation ##
 `npm install -D fluxxor-test-utils`
