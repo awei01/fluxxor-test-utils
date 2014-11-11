@@ -36,15 +36,16 @@ If you're using Jest, according to this issue: https://github.com/facebook/jest/
 
 ## FluxxorTestUtils ##
 
-### .fakeFlux( [storesOrFluxInstance], [actions] ) ###
+FluxxorTestUtils.fakeFlux( [storesOrFluxInstance], [actions] )
 
 ```
-var FluxxorTestUtils = require('fluxxor-test-utils');
-
 # fakeFlux() returns an instance of FakeFlux. 
 # FakeFlux inherits from Fluxxor.Lib.Flux and has some additionaly methods to facilitate testing.
-# @param: Object of stores | instance of Flux | undefined
-# @param: Object of actions | undefined
+# @param:   (optional) Object of stores | instance of Flux 
+# @param:   (optional) Object of actions
+# @returns: FakeFlux instance
+
+var FluxxorTestUtils = require('fluxxor-test-utils');
 
 var fakeFlux = FluxxorTestUtils.fakeFlux(); 
 // returns instance of FakeFlux with empty stores and empty actions
@@ -62,5 +63,35 @@ var fakeFlux = new FluxxorTestUtils.fakeFlux(realFlux);
 // fakeFlux.stores = { Foo: FooStore instance }
 // fakeFlux.actions = { doFooAction: function() { } }
 
+```
+
+FluxxorTestUtils.extendJasmineMatchers( jasmine )
+
+```
+# extendJasmineMatchers() 
+# This method extends jasmine matchers with additional methods for testing.
+# @param:   (required) The jasmine object (usually "this" when in a test suite)
+# @returns: itself to allow for chaining
+
+# from within a test suite:
+var FluxxorTestUtils;
+beforeEach(function() {
+	FluxxorTestUtils = require('fluxxor-test-utils');
+	FluxxorTestUtils.extendJasmineMatchers();
+	
+	// or:
+	// FluxxorTestUtils = require('fluxxor-test-utils').extendJasmineMatchers();
+});
+```
+
+FluxxorTestUtils.getJestUtils()
+
+```
+# getJestUtils();
+# Returns instance of Jest utility object that helps resolve jest instance if you're using jest-cli to test
+# @returns: JestUtils
+
+var FluxxorTestUtils = require('fluxxor-test-utils');
+var JestUtils = FluxxorTestUtils.getJestUtils();
 ```
 
