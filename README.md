@@ -32,10 +32,35 @@ Or, you can globally configure jest with `unmockedModulePathPatterns` in your `p
 
 If you're using Jest, according to this issue: https://github.com/facebook/jest/issues/106, you'll have to add `jest.dontMock('util');` at the top of every test in which you want to use `fluxxor` or `fluxxor-test-utils`.
 
-## FluxxorTestUtils Usage ##
+# API #
 
-Require `fluxxor-test-utils` in your test file. This will return an object with 3 methods:
+## FluxxorTestUtils ##
 
-* ** fakeFlux([storesOrFluxInstance], [actions]) **: this method mirrors the instantiation of a new `Flux` instance. It will return an instance of `FakeFlux`
+### .fakeFlux( [storesOrFluxInstance], [actions] ) ###
 
-* **
+```
+var FluxxorTestUtils = require('fluxxor-test-utils');
+
+# fakeFlux() returns an instance of FakeFlux. 
+# FakeFlux inherits from Fluxxor.Lib.Flux and has some additionaly methods to facilitate testing.
+# @param: Object of stores | instance of Flux | undefined
+# @param: Object of actions | undefined
+
+var fakeFlux = FluxxorTestUtils.fakeFlux(); 
+// returns instance of FakeFlux with empty stores and empty actions
+// fakeFlux.stores = {}
+// fakeFlux.actions = {}
+
+var fakeFlux = FluxxorTestUtils.fakeFlux({ Foo: new FooStore() }, { doFooAction: function() { } });
+// returns instance of FakeFlux with stores and actions
+// fakeFlux.stores = { Foo: FooStore instance }
+// fakeFlux.actions = { doFooAction: function() { } }
+
+var realFlux = new Fluxxor.Flux({ Foo: new FooStore() }, { doFooAction: function() { } });
+var fakeFlux = new FluxxorTestUtils.fakeFlux(realFlux);
+// returns instance of FakeFlux using the stores and actions defined on a Flux instance
+// fakeFlux.stores = { Foo: FooStore instance }
+// fakeFlux.actions = { doFooAction: function() { } }
+
+```
+
