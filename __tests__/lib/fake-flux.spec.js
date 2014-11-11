@@ -130,6 +130,26 @@ describe('Lib.FakeFlux', function() {
 					fakeFlux.genMocksForActions();
 				}).toThrow('genMocksForActions() cannot find actions to mock');
 			});
+			it('when called, should return self', function() {
+				fakeFlux.addActions(Actions);
+				var result = fakeFlux.genMocksForActions();
+				expect(result).toBe(fakeFlux);
+			});
+		});
+		describe('.genMocksForStoresAndActions()', function() {
+			beforeEach(function() {
+				fakeFlux.genMocksForStore = jest.genMockFn();
+				fakeFlux.genMocksForActions = jest.genMockFn();
+			});
+			it('when called should call .genMocksForStore() with * and .genMocksForActions() on self', function() {
+				fakeFlux.genMocksForStoresAndActions();
+				expect(fakeFlux.genMocksForStore).lastCalledWith('*');
+				expect(fakeFlux.genMocksForActions).lastCalledWith();
+			});
+			it('when called, should return self', function() {
+				var result = fakeFlux.genMocksForStoresAndActions();
+				expect(result).toBe(fakeFlux);
+			});
 		});
 	});
 	describe('result when instantiated with a flux instance', function() {
