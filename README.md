@@ -63,12 +63,45 @@ var fakeFlux = new FluxxorTestUtils.fakeFlux(realFlux);
 // fakeFlux.actions = { doFooAction: function() { } }
 
 ```
+FluxxorTestUtils.extendJasmineMatchers( jasmine )
 
+```
+# This method extends jasmine matchers with additional methods for testing.
+# @param:   (required) The jasmine object (usually "this" when in a test suite)
+# @returns: itself to allow for chaining
 
+# from within a test suite:
+var FluxxorTestUtils;
+describe('some suite', function() {
+
+	beforeEach(function() {
+		FluxxorTestUtils = require('fluxxor-test-utils');
+		FluxxorTestUtils.extendJasmineMatchers();
+	
+		// or:
+		// FluxxorTestUtils = require('fluxxor-test-utils').extendJasmineMatchers();
+	});
+	// now we can use:
+	// expect(StoreWatchSpy).toHaveEmitted();
+	// expect(StoreWatchSpy).lastEmittedWith('change');
+	// expect(ActionsDispatchSpy).lastDispatchedWith('foo event', { value: "foo" });
+	
+});
+```
+
+FluxxorTestUtils.getJestUtils()
+
+```
+# Returns object that helps resolve jest instance if you're using jest-cli to test
+# @returns: JestUtils
+
+var FluxxorTestUtils = require('fluxxor-test-utils');
+var JestUtils = FluxxorTestUtils.getJestUtils();
+```
 ## FakeFlux ##
 
 fakeFlux.makeStoreEmitSpy( storeName )
-
+Once the store spied on, all this.emit() calls from within the store are overridden and cannot be restored. 
 
 ```
 # Returns a StoreEmitSpy
@@ -80,7 +113,8 @@ var fooSpy = fakeFlux.makeStoreEmitSpy('FooStore');
 ```
 
 fakeFlux.makeActionsDispatchSpy();
-
+Once the actions dispatch is spied on, all the this.dispatch() calls from within the actions are overridden and cannot be restored. 
+ 
 ``` 
 # Returns an ActionsDispatchSpy
 # @returns: ActionsDispatchSpy
@@ -130,3 +164,116 @@ var fakeFlux = FluxxorTestUtils.fakeFlux({ FooStore: new FooStore() }, { doFooAc
 fakeFlux.genMocksForStoresAndActions();
 // now all the stores' and actions' methods are mocked with jest.genMockFn();
 ```
+
+## Spy (StoreEmitSpy and ActionsDispatchSpy inherit from this prototype) ##
+
+```
+# Spy.__calls__ "private" reference to array of arguments of captured calls
+# Spy.__captureCall "private" method to capture a call
+
+Spy.__captureCall('foo');
+Spy.__captureCall('bar', 'baz');
+
+
+# Spy.getCalls()
+# @returns: array of argruments of captured calls
+
+Spy.getCalls() 
+// returns [['foo'], ['bar', 'baz']];
+
+# Spy.getLastCall()
+# @returns: array of parameters for last call
+
+Spy.getLastCall() 
+// returns ['bar', 'baz'];
+
+# Spy.resetCalls();
+# @returns: null
+
+Spy.resetCalls();
+// now Spy.__calls__ is an empty array
+
+
+```
+
+# Examples #
+
+## Unit testing a store ##
+```
+describe('Testing MyStore', function() {
+	var FluxxorTestUtils, fakeFlux, myStore, myStoreSpy;
+	beforeEach(function() {
+		FluxxorTestUtils = require('fluxxor-test-utils').extendJasmineMatchers(this);
+		// now our jasmine matchers are available
+
+		fakeFlux = FluxxorTestUtils.fakeFlux({ MyStore: new require('../my-store')() });
+		// now we have a FakeFlux instance that has .stores.MyStore
+		
+		myStore = fakeFlux.store('MyStore');
+		// easier access to my store instance
+		
+		myStoreSpy = fakeFlux.makeStoreEmitSpy('MyStore');
+		// now all our this.emit() calls from within the store are captured
+	});
+	it('when dispatcher dispatches event of "foo event" with payload.value, it should set .getValue() and emit "change" event', function() {
+		fakeFlux.dispatcher.dispatch({ type: "foo event", payload: { value: "new value" } });
+		expect(myStore.getValue()).toBe('new value');
+		expect(myStoreSpy.getLastCall()).toEqual(['change']);
+		// because we extended jasmine matchers, we can also do:
+		expect(myStoreSpy).lastEmittedWith('change');
+	});
+});
+```
+
+## Unit testing actions ##
+```
+describe('Testing MyActions', function() {
+	var FluxxorTestUtils, fakeFlux, myActionsSpy;
+	beforeEach(function() {
+		FluxxorTestUtils = require('fluxxor-test-utils').extendJasmineMatchers(this);
+		// now our jasmine matchers are available
+
+		fakeFlux = FluxxorTestUtils.fakeFlux({}, require('../my-actions'));
+		// now we have a FakeFlux instance that has .actions set
+		
+		myActionsSpy = fakeFlux.makeActionsDispatchSpy();
+		// now all our this.dispatch() calls from within the actions are captured
+	});
+	it('when actions.doFoo() called with "foo value", it should dispatch "foo event" and { value: "foo value" }', function() {
+		fakeFlux.actions.doFoo('foo value');
+		expect(myActionsSpy.getLastCall()).toEqual(['foo event', { value: "foo value" }]);
+		// or:
+		expect(myActionsSpy).lastDispatchedWith('foo event', { value: "foo value" });
+	});
+});
+```
+
+## Unit testing a react component that uses Flux ##
+```
+describe('Testing my component', function() {
+	var React, TestUtils, FluxxorTestUtils, fakeFlux, MyComponent;
+	beforeEach(function() {
+		React = require('react/addons');
+		TestUtils = React.addons.TestUtils;
+		FluxxorTestUtils = require('fluxxor-test-utils');
+		fakeFlux = FluxxorTestUtils({ MyStore: new require('../my-store') }, require('../my-actions'));
+		fakeFlux.genMocksForStoresAndActions();
+		// now all store and action methods are mocked for testing
+		
+		MyComponent = require('../my-component');
+	});
+	it('when mounted, it should call .getFooValue() on my store and set state.foo', function() {
+		var store = fakeFlux.stores.MyStore; // easier reference to our store
+		var component;
+		
+		store.getFooValue.mockReturnValue('value from store');
+		component = TestUtils.renderIntoDocument(MyComponent({ flux: fakeFlux });
+		expect(store.getFooValue).toBeCalled();
+		expect(component.state.foo).toBe('value from store');
+	});
+	it('when mounted and clicked, should call actions.doFooAction()', function() {
+		var component = TestUtils.renderIntoDocument(MyComponent({ flux: fakeFlux });
+		TestUtils.Simulate.click(component.getDOMNode());
+		expect(fakeFlux.actions.doFooAction).toBeCalled();
+	});
+});
