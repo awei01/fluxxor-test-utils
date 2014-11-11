@@ -237,6 +237,7 @@ describe('Testing MyActions', function() {
 ```
 
 ## Unit testing a react component that uses Flux ##
+
 ```
 describe('Testing my component', function() {
 	var React, TestUtils, FluxxorTestUtils, fakeFlux, MyComponent;
