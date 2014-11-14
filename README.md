@@ -38,17 +38,19 @@ If you're using Jest, according to this issue: https://github.com/facebook/jest/
 
 ```
 # FluxxorTestUtils.fakeFlux( [storesOrFluxInstance], [actions] )
-# FakeFlux inherits from Fluxxor.Lib.Flux and has some additionaly methods to facilitate testing.
-# @param:   (optional) Object of stores | instance of Flux 
+# FakeFlux inherits from Fluxxor.Lib.Flux and has some additional methods to facilitate testing.
+# @param:   (optional) Object of stores | instance of Flux
 # @param:   (optional) Object of actions
 # @returns: FakeFlux instance
 
 var FluxxorTestUtils = require('fluxxor-test-utils');
 
-var fakeFlux = FluxxorTestUtils.fakeFlux(); 
+var fakeFlux = FluxxorTestUtils.fakeFlux();
 // returns instance of FakeFlux with empty stores and empty actions
 // fakeFlux.stores = {}
 // fakeFlux.actions = {}
+// you can now add stores or actions on this flux object
+// fakeFlux.addStores({ FooStore: new FooStore() }) or fakeFlux.addActions("doFooAction", function() { ... } );
 
 var fakeFlux = FluxxorTestUtils.fakeFlux({ Foo: new FooStore() }, { doFooAction: function() { } });
 // returns instance of FakeFlux with stores and actions
@@ -74,7 +76,7 @@ describe('some suite', function() {
 	beforeEach(function() {
 		FluxxorTestUtils = require('fluxxor-test-utils');
 		FluxxorTestUtils.extendJasmineMatchers();
-	
+
 		// or:
 		// FluxxorTestUtils = require('fluxxor-test-utils').extendJasmineMatchers();
 	});
@@ -82,7 +84,7 @@ describe('some suite', function() {
 	// expect(StoreWatchSpy).toHaveEmitted();
 	// expect(StoreWatchSpy).lastEmittedWith('change');
 	// expect(ActionsDispatchSpy).lastDispatchedWith('foo event', { value: "foo" });
-	
+
 });
 
 
@@ -98,7 +100,7 @@ var JestUtils = FluxxorTestUtils.getJestUtils();
 
 ```
 # fakeFlux.makeStoreEmitSpy( storeName )
-# Once the store spied on, all this.emit() calls from within the store are overridden and cannot be restored. 
+# Once the store spied on, all this.emit() calls from within the store are overridden and cannot be restored.
 # Returns a StoreEmitSpy
 # @param:  (required) valid name of a store
 # @returns: StoreEmitSpy
@@ -108,7 +110,7 @@ var fooSpy = fakeFlux.makeStoreEmitSpy('FooStore');
 
 
 # fakeFlux.makeActionsDispatchSpy();
-# Once the actions dispatch is spied on, all the this.dispatch() calls from within the actions are overridden and cannot be restored. 
+# Once the actions dispatch is spied on, all the this.dispatch() calls from within the actions are overridden and cannot be restored.
 # Returns an ActionsDispatchSpy
 # @returns: ActionsDispatchSpy
 
@@ -166,13 +168,13 @@ Spy.__captureCall('bar', 'baz');
 # Spy.getCalls()
 # @returns: array of argruments of captured calls
 
-Spy.getCalls() 
+Spy.getCalls()
 // returns [['foo'], ['bar', 'baz']];
 
 # Spy.getLastCall()
 # @returns: array of parameters for last call
 
-Spy.getLastCall() 
+Spy.getLastCall()
 // returns ['bar', 'baz'];
 
 # Spy.resetCalls();
@@ -187,6 +189,7 @@ Spy.resetCalls();
 # Examples #
 
 ## Unit testing a store ##
+
 ```
 describe('Testing MyStore', function() {
 	var FluxxorTestUtils, fakeFlux, myStore, myStoreSpy;
@@ -196,10 +199,10 @@ describe('Testing MyStore', function() {
 
 		fakeFlux = FluxxorTestUtils.fakeFlux({ MyStore: new require('../my-store')() });
 		// now we have a FakeFlux instance that has .stores.MyStore
-		
+
 		myStore = fakeFlux.store('MyStore');
 		// easier access to my store instance
-		
+
 		myStoreSpy = fakeFlux.makeStoreEmitSpy('MyStore');
 		// now all our this.emit() calls from within the store are captured
 	});
@@ -214,6 +217,7 @@ describe('Testing MyStore', function() {
 ```
 
 ## Unit testing actions ##
+
 ```
 describe('Testing MyActions', function() {
 	var FluxxorTestUtils, fakeFlux, myActionsSpy;
@@ -223,7 +227,7 @@ describe('Testing MyActions', function() {
 
 		fakeFlux = FluxxorTestUtils.fakeFlux({}, require('../my-actions'));
 		// now we have a FakeFlux instance that has .actions set
-		
+
 		myActionsSpy = fakeFlux.makeActionsDispatchSpy();
 		// now all our this.dispatch() calls from within the actions are captured
 	});
@@ -237,6 +241,7 @@ describe('Testing MyActions', function() {
 ```
 
 ## Unit testing a react component that uses Flux ##
+
 ```
 describe('Testing my component', function() {
 	var React, TestUtils, FluxxorTestUtils, fakeFlux, MyComponent;
@@ -247,13 +252,13 @@ describe('Testing my component', function() {
 		fakeFlux = FluxxorTestUtils({ MyStore: new require('../my-store') }, require('../my-actions'));
 		fakeFlux.genMocksForStoresAndActions();
 		// now all store and action methods are mocked for testing
-		
+
 		MyComponent = require('../my-component');
 	});
 	it('when mounted, it should call .getFooValue() on my store and set state.foo', function() {
 		var store = fakeFlux.stores.MyStore; // easier reference to our store
 		var component;
-		
+
 		store.getFooValue.mockReturnValue('value from store');
 		component = TestUtils.renderIntoDocument(MyComponent({ flux: fakeFlux });
 		expect(store.getFooValue).toBeCalled();
@@ -265,3 +270,4 @@ describe('Testing my component', function() {
 		expect(fakeFlux.actions.doFooAction).toBeCalled();
 	});
 });
+```
