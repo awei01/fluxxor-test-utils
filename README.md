@@ -116,7 +116,12 @@ var fooSpy = fakeFlux.makeStoreEmitSpy('FooStore');
 
 var fakeFlux = FluxxorTestUtils.fakeFlux({}, { doFooAction: function() { } });
 var actionsSpy = fakeFlux.makeActionsDispatchSpy();
+```
 
+### Methods which require Jest ###
+
+The following FakeFlux methods require Jest
+```
 
 # fakeFlux.genMocksForStore( storeName, [storeName...])
 # When used within Jest tests, creates mocks for each of the store's public methods (not prefixed with '_')
