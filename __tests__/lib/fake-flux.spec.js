@@ -93,6 +93,9 @@ describe('Lib.FakeFlux', function() {
 				it('should not mock unspecified stores', function() {
 					expect(otherFooStore.getValue.mock).toBe(undefined);
 				});
+				it('should mock bound .__actions__', function() {
+					expect(fooStore.__actions__[Events.FOO_EVENT].mock.calls).toEqual([]);
+				});
 			});
 			it('when called with store names, should mock all of the stores', function() {
 				fakeFlux.genMocksForStores('FooStore', 'OtherFooStore');
