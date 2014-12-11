@@ -72,7 +72,7 @@ describe('Lib.FakeFlux', function() {
 				fakeFlux.makeActionsDispatchSpy();
 			}).toThrow('Cannot spy on undefined actions');
 		});
-		describe('.genMocksForStore()', function() {
+		describe('.genMocksForStores()', function() {
 			var fooStore, otherFooStore;
 			beforeEach(function() {
 				fooStore = new FooStore();
@@ -81,7 +81,7 @@ describe('Lib.FakeFlux', function() {
 			});
 			describe('when called with specific store name', function() {
 				beforeEach(function() {
-					fakeFlux.genMocksForStore('FooStore');
+					fakeFlux.genMocksForStores('FooStore');
 				});
 				it('should mock "public" methods', function() {
 					expect(fooStore.getValue.mock.calls).toEqual([]);
@@ -95,22 +95,22 @@ describe('Lib.FakeFlux', function() {
 				});
 			});
 			it('when called with store names, should mock all of the stores', function() {
-				fakeFlux.genMocksForStore('FooStore', 'OtherFooStore');
+				fakeFlux.genMocksForStores('FooStore', 'OtherFooStore');
 				expect(fooStore.getValue.mock.calls).toEqual([]);
 				expect(otherFooStore.getValue.mock.calls).toEqual([]);
 			});
 			it('when called with *, should mock all of the stores', function() {
-				fakeFlux.genMocksForStore('*');
+				fakeFlux.genMocksForStores('*');
 				expect(fooStore.getValue.mock.calls).toEqual([]);
 				expect(otherFooStore.getValue.mock.calls).toEqual([]);
 			});
 			it('when called with non-existing store, should throw exception', function() {
 				expect(function() {
-					fakeFlux.genMocksForStore('Invalid');
-				}).toThrow('genMocksForStore() cannot mock invalid store [Invalid]');
+					fakeFlux.genMocksForStores('Invalid');
+				}).toThrow('genMocksForStores() cannot mock invalid store [Invalid]');
 			});
 			it('when called with store, should return self', function() {
-				var result = fakeFlux.genMocksForStore('FooStore');
+				var result = fakeFlux.genMocksForStores('FooStore');
 				expect(result).toBe(fakeFlux);
 			});
 		});
@@ -138,12 +138,17 @@ describe('Lib.FakeFlux', function() {
 		});
 		describe('.genMocksForStoresAndActions()', function() {
 			beforeEach(function() {
-				fakeFlux.genMocksForStore = jest.genMockFn();
+				fakeFlux.genMocksForStores = jest.genMockFn();
 				fakeFlux.genMocksForActions = jest.genMockFn();
 			});
-			it('when called should call .genMocksForStore() with * and .genMocksForActions() on self', function() {
+			it('when called with no args should call .genMocksForStores() with "*" and .genMocksForActions() on self', function() {
 				fakeFlux.genMocksForStoresAndActions();
-				expect(fakeFlux.genMocksForStore).lastCalledWith('*');
+				expect(fakeFlux.genMocksForStores).lastCalledWith('*');
+				expect(fakeFlux.genMocksForActions).lastCalledWith();
+			});
+			it('when called with args should call .genMocksForStores() with args and .genMocksForActions() on self', function() {
+				fakeFlux.genMocksForStoresAndActions('foo', 'bar');
+				expect(fakeFlux.genMocksForStores).lastCalledWith('foo', 'bar');
 				expect(fakeFlux.genMocksForActions).lastCalledWith();
 			});
 			it('when called, should return self', function() {

@@ -123,20 +123,20 @@ var actionsSpy = fakeFlux.makeActionsDispatchSpy();
 The following FakeFlux methods require Jest
 ```
 
-# fakeFlux.genMocksForStore( storeName, [storeName...])
+# fakeFlux.genMocksForStores( storeName, [storeName...])
 # When used within Jest tests, creates mocks for each of the store's public methods (not prefixed with '_')
 # @param:   one or more names of store, use "*" to mock all stores
 # @returns: FakeFlux instance for chaining
 
 var fakeFlux = FluxxorTestUtils.fakeFlux({ FooStore: new FooStore(), BarStore: new BarStore() });
 
-fakeFlux.genMocksForStore('FooStore');
+fakeFlux.genMocksForStores('FooStore');
 // now all the FooStore methods are mocked with jest.genMockFn();
 
-fakeFlux.genMocksForStore('FooStore', 'BarStore');
+fakeFlux.genMocksForStores('FooStore', 'BarStore');
 // now both the FooStore and BarStore methods are mocked with jest.genMockFn();
 
-fakeFlux.genMocksForStore('*');
+fakeFlux.genMocksForStores('*');
 // all of the stores' methods are mocked with jest.genMockFn();
 
 
@@ -151,7 +151,8 @@ fakeFlux.genMocksForActions();
 
 
 # fakeFlux.genMocksForStoresAndActions()
-# Mocks all the stores' and actions` methods using jest.genMockFn();
+# Mocks all the passed stores and actions` methods using jest.genMockFn(); If no stores passed, mocks all stores.
+# @params: 	store names
 # @returns: FakeFlux instance for chaning
 
 var fakeFlux = FluxxorTestUtils.fakeFlux({ FooStore: new FooStore() }, { doFooAction: function() { } });
