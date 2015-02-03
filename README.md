@@ -22,7 +22,7 @@ Or, you can globally configure jest with `unmockedModulePathPatterns` in your `p
 	"jest": {
 		"unmockedModulePathPatterns": [
 			"node_modules/fluxxor",
-			"node_modules/fluxxor-jest-utils"
+			"node_modules/fluxxor-test-utils"
 		]
 	}
 }
