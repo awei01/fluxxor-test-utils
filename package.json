@@ -19,9 +19,6 @@
     "fluxxor": "^1.5.0",
     "lodash": "^2.4.1"
   },
-  "peerDependencies": {
-    "react": "^0.13.0"
-  },
   "jest": {
     "testFileExtensions": [
       "spec.js"
