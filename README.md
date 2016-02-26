@@ -28,9 +28,15 @@ Or, you can globally configure jest with `unmockedModulePathPatterns` in your `p
 }
 ```
 
+You may also need to put `object-path` into `ummockedModulePaths` according to https://github.com/awei01/fluxxor-test-utils/issues/11. Sorry, I haven't chased this down, but including it in readme just in case. 
+
+
 ## Gotchas! ##
 
 If you're using Jest, according to this issue: https://github.com/facebook/jest/issues/106, you'll have to add `jest.dontMock('util');` at the top of every test in which you want to use `fluxxor` or `fluxxor-test-utils`.
+
+
+
 
 # API #
 
